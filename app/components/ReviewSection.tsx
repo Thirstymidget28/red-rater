@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import TestimonialCard from "./TestimonialCard";
 
@@ -35,24 +35,24 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   const [filter, setFilter] = useState<string>("Date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const response = await fetch("/api/auth/user");
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
-          setIsLoggedIn(true);
-        }
-      } catch (error) {
-        console.error("Failed to check login status:", error);
+  const checkLoginStatus = async () => {
+    try {
+      const response = await fetch("/api/auth/user");
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data);
+        setIsLoggedIn(true);
       }
-    };
+    } catch (error) {
+      console.error("Failed to check login status:", error);
+    }
+  };
 
+  useEffect(() => {
     checkLoginStatus();
   }, []);
 
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     try {
       const response = await fetch(
         `/api/reviews/${encodeURIComponent(professorName)}`
@@ -66,11 +66,11 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
     } catch (error) {
       console.error("Failed to fetch reviews:", error);
     }
-  };
+  }, [professorName]);
 
   useEffect(() => {
     fetchReviews();
-  }, [professorName]);
+  }, [fetchReviews]);
 
   const handleNewPostClick = () => {
     if (!isLoggedIn) {
