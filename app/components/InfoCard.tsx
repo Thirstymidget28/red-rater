@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import LineGraph from "./LineGraph";
 
 interface InfoCardProps {
@@ -37,15 +37,17 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   const [filteredTerms, setFilteredTerms] = useState<string[]>([]);
   const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
-  const [data, setData] = useState<ProfessorData[]>([]); // Use ProfessorData type
-  const [overallRating, setOverallRating] = useState<number>(0); // Initialize overallRating to 0
-  const [profOverallRating, setProfOverallRating] = useState<number>(0); // Initialize profOverallRating to 0
+  const [data, setData] = useState<ProfessorData[]>([]);
+  const [overallRating, setOverallRating] = useState<number>(0);
+  const [profOverallRating, setProfOverallRating] = useState<number>(0);
   const [lineGraphData, setLineGraphData] = useState<
     { term: string; rating: number }[]
-  >([]); // Data for LineGraph
+  >([]);
   const [avgResponse1, setAvgResponse1] = useState<number>(0);
   const [avgResponse2, setAvgResponse2] = useState<number>(0);
   const [avgResponse3, setAvgResponse3] = useState<number>(0);
+
+  const profileRef = useRef<Profile | null>(profile);
 
   const fetchProfile = useCallback(async () => {
     try {
@@ -57,12 +59,11 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
       }
       const data: ProfessorData[] = await response.json();
 
-      // Parse CourseNum as a number
       const parsedData = data.map((item) => ({
         ...item,
         CourseNum: parseInt(item.CourseNum.toString(), 10),
       }));
-      setData(parsedData); // Store parsed data
+      setData(parsedData);
 
       if (parsedData && parsedData.length > 0) {
         console.log("Fetched data:", parsedData);
@@ -70,7 +71,6 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
         console.log("No data found");
       }
 
-      // Transform the data to match the Profile interface
       const transformedProfile: Profile = {
         name: parsedData[0].Name,
         subjectName: parsedData[0].SubjectName,
@@ -95,7 +95,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
       setProfOverallRating(Math.round((averageRating / 5) * 100));
 
       console.log("Transformed profile:", transformedProfile);
-      profile = transformedProfile;
+      profileRef.current = transformedProfile;
     } catch (error) {
       console.error("Failed to fetch profile:", error);
     } finally {
@@ -137,7 +137,6 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
       );
       setFilteredTerms(terms);
 
-      // Extract overallRating and Term for the selected course
       const graphData = data
         .filter((item) => item.CourseNum === parseInt(selectedCourse))
         .map((item) => ({
@@ -146,7 +145,6 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
         }));
       setLineGraphData(graphData);
 
-      // Set the selected term to the first term in the filtered terms
       if (terms.length > 0) {
         setSelectedTerm(terms[0]);
       }
@@ -155,7 +153,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
       setLineGraphData([]);
       setSelectedTerm(null);
     }
-  }, [selectedCourse, data, animateOverallRating]);
+  }, [selectedCourse, data]);
 
   useEffect(() => {
     if (selectedCourse && selectedTerm) {
@@ -178,15 +176,15 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
 
   const handleCourseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCourse(e.target.value);
-    setSelectedTerm(null); // Reset the selected term when the course changes
-    animateOverallRating(0); // Interpolate the overall rating to 0 when the course changes
+    setSelectedTerm(null);
+    animateOverallRating(0);
   };
 
   const handleTermChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const term = e.target.value;
     setSelectedTerm(term);
     if (!term) {
-      animateOverallRating(0); // Interpolate the overall rating to 0 when the term is set to the default value
+      animateOverallRating(0);
     }
   };
 
@@ -200,7 +198,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
   }
 
   if (!profile) {
-    return null; // Return null if profile is not set to avoid rendering errors
+    return null;
   }
 
   return (
@@ -269,7 +267,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
             className="select bg-slate-50 select-bordered border-2 border-black focus:border-black focus:outline-none w-1/2 max-w-40 font-bold ml-1"
             value={selectedTerm || ""}
             onChange={handleTermChange}
-            disabled={!selectedCourse} // Disable the term dropdown if no course is selected
+            disabled={!selectedCourse}
           >
             <option value="" disabled>
               Term
