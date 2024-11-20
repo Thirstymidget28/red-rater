@@ -42,18 +42,18 @@ export default async function RootLayout({
 }) {
   const headers = new Headers();
   if (typeof window === "undefined") {
-    // Check if application is running locally
-    headers.set("host", process.env.HOST || "localhost:3000");
-    headers.set("x-forwarded-proto", process.env.PROTOCOL || "http");
+    const host = process.env.HOST || "red-rater.vercel.app";
+    const protocol = process.env.PROTOCOL || "https";
+    headers.set("host", host);
+    headers.set("x-forwarded-proto", protocol);
   }
 
   const initialUser = await fetchInitialUser(headers);
 
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className="antialiased">
+    <html lang="en">
+      <body>
         <Navbar initialUser={initialUser} />
-        {/* <AITool /> */}
         <Botpress />
         {children}
       </body>
