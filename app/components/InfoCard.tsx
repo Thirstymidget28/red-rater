@@ -153,7 +153,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
       setLineGraphData([]);
       setSelectedTerm(null);
     }
-  }, [selectedCourse, data]);
+  }, [selectedCourse, data, animateOverallRating]);
 
   useEffect(() => {
     if (selectedCourse && selectedTerm) {
