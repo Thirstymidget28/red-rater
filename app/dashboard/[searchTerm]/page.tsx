@@ -32,7 +32,7 @@ const Dashboard = async ({ params, searchParams }: DashboardProps) => {
   const transformedProfile = {
     name: data[0].Name,
     subjectName: data[0].SubjectName,
-    terms: Array.from(new Set(data.map((item: any) => item.Term))) as string[],
+    terms: Array.from(new Set(data.map((item: any) => item.Term))),
     courses: Array.from(
       new Set(data.map((item: any) => item.CourseNum))
     ) as string[],
