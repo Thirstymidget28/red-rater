@@ -1,10 +1,8 @@
 import Image from "next/image";
-import Link from "next/link";
-import Navbar from "./components/Navbar";
 import SearchBar from "./components/SearchBar";
 
 // Home Page
-const Home = () => {
+export default function Home() {
   return (
     <main className="h-screen pt-20">
       <div className="bg-hero bg-cover bg-center h-full w p-2 flex flex-col content-center items-center">
@@ -36,6 +34,4 @@ const Home = () => {
       </div>
     </main>
   );
-};
-
-export default Home;
+}
