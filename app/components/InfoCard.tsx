@@ -172,7 +172,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
         setAvgResponse3(parseFloat(selectedData.AvgResponse3));
       }
     }
-  }, [selectedCourse, selectedTerm, data]);
+  }, [selectedCourse, selectedTerm, data, animateOverallRating]);
 
   const handleCourseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCourse(e.target.value);
