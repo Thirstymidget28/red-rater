@@ -5,7 +5,7 @@ import LineGraph from "./LineGraph";
 
 interface InfoCardProps {
   searchTerm: string;
-  profile: any;
+  profile: Profile;
 }
 
 interface Profile {
@@ -20,12 +20,24 @@ interface Profile {
   overallRating: number;
 }
 
+interface ProfessorData {
+  Name: string;
+  SubjectName: string;
+  Term: string;
+  CourseNum: number;
+  Entries: string;
+  AvgResponse1: string;
+  AvgResponse2: string;
+  AvgResponse3: string;
+  OverallRating: string;
+}
+
 const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
   const [loading, setLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   const [filteredTerms, setFilteredTerms] = useState<string[]>([]);
   const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
-  const [data, setData] = useState<any[]>([]); // Store raw data
+  const [data, setData] = useState<ProfessorData[]>([]); // Use ProfessorData type
   const [overallRating, setOverallRating] = useState<number>(0); // Initialize overallRating to 0
   const [profOverallRating, setProfOverallRating] = useState<number>(0); // Initialize profOverallRating to 0
   const [lineGraphData, setLineGraphData] = useState<
@@ -43,33 +55,46 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      const data = await response.json();
-      setData(data); // Store raw data
+      const data: ProfessorData[] = await response.json();
+
+      // Parse CourseNum as a number
+      const parsedData = data.map((item) => ({
+        ...item,
+        CourseNum: parseInt(item.CourseNum.toString(), 10),
+      }));
+      setData(parsedData); // Store parsed data
+
+      if (parsedData && parsedData.length > 0) {
+        console.log("Fetched data:", parsedData);
+      } else {
+        console.log("No data found");
+      }
 
       // Transform the data to match the Profile interface
       const transformedProfile: Profile = {
-        name: data[0].Name,
-        subjectName: data[0].SubjectName,
-        terms: Array.from(new Set(data.map((item: any) => item.Term))),
-        courses: Array.from(new Set(data.map((item: any) => item.CourseNum))),
-        entries: data.reduce(
-          (acc: number, item: any) => acc + parseInt(item.Entries, 10),
+        name: parsedData[0].Name,
+        subjectName: parsedData[0].SubjectName,
+        terms: Array.from(new Set(parsedData.map((item) => item.Term))),
+        courses: Array.from(new Set(parsedData.map((item) => item.CourseNum.toString()))),
+        entries: parsedData.reduce(
+          (acc, item) => acc + parseInt(item.Entries, 10),
           0
         ),
-        avgResponse1: parseFloat(data[0].AvgResponse1),
-        avgResponse2: parseFloat(data[0].AvgResponse2),
-        avgResponse3: parseFloat(data[0].AvgResponse3),
+        avgResponse1: parseFloat(parsedData[0].AvgResponse1),
+        avgResponse2: parseFloat(parsedData[0].AvgResponse2),
+        avgResponse3: parseFloat(parsedData[0].AvgResponse3),
         overallRating: Math.round(
-          (parseFloat(data[0].OverallRating) / 5) * 100
+          (parseFloat(parsedData[0].OverallRating) / 5) * 100
         ),
       };
-      const totalRating = data.reduce(
-        (sum: number, item: any) => sum + parseFloat(item.OverallRating),
+      const totalRating = parsedData.reduce(
+        (sum: number, item) => sum + parseFloat(item.OverallRating),
         0
       );
-      const averageRating = totalRating / data.length;
+      const averageRating = totalRating / parsedData.length;
       setProfOverallRating(Math.round((averageRating / 5) * 100));
 
+      console.log("Transformed profile:", transformedProfile);
       profile = transformedProfile;
     } catch (error) {
       console.error("Failed to fetch profile:", error);
@@ -87,16 +112,16 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
       const terms = Array.from(
         new Set(
           data
-            .filter((item: any) => item.CourseNum === parseInt(selectedCourse))
-            .map((item: any) => item.Term)
+            .filter((item) => item.CourseNum === parseInt(selectedCourse))
+            .map((item) => item.Term)
         )
       );
       setFilteredTerms(terms);
 
       // Extract overallRating and Term for the selected course
       const graphData = data
-        .filter((item: any) => item.CourseNum === parseInt(selectedCourse))
-        .map((item: any) => ({
+        .filter((item) => item.CourseNum === parseInt(selectedCourse))
+        .map((item) => ({
           term: item.Term,
           rating: Math.round((parseFloat(item.OverallRating) / 5) * 100),
         }));
@@ -116,7 +141,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
   useEffect(() => {
     if (selectedCourse && selectedTerm) {
       const selectedData = data.find(
-        (item: any) =>
+        (item) =>
           item.CourseNum === parseInt(selectedCourse) &&
           item.Term === selectedTerm
       );
@@ -283,7 +308,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
         <div className="w-full flex flex-col justify-center items-center pb-10 px-1">
           <div className="bg-gray-800 shadow-md shadow-black rounded-md h-fit w-fit p-3 mb-3 2xl:p-5">
             <h3 className="font-helvetica text-center text-slate-100 text-3xl 2xl:text-4xl font-bold">
-              Overall Rating
+              Professor Rating
             </h3>
           </div>
           <div className="self-center">
