@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { professorNam
       [professorName]
     );
     connection.release();
-    console.log('Reviews fetched successfully:', reviews);
+    console.log('Reviews fetched successfully');
     return NextResponse.json(reviews, { status: 200 });
   } catch (error) {
     console.error('Failed to fetch reviews:', error);

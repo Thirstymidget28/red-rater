@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     ORDER BY 
       CAST(SUBSTRING_INDEX(Term, ' ', -1) AS UNSIGNED) ASC
       `, [name]);
-    console.log(`Data retrieved for name ${name}:`, rows);
+    console.log(`Data retrieved for name ${name}`);
     return NextResponse.json(rows);
   } catch (error) {
     console.error(`Error in /api/professors/${name}:`, error);
