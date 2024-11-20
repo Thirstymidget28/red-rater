@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import LineGraph from "./LineGraph";
 
 interface InfoCardProps {
@@ -47,7 +47,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
   const [avgResponse2, setAvgResponse2] = useState<number>(0);
   const [avgResponse3, setAvgResponse3] = useState<number>(0);
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const response = await fetch(
         `/api/professors/${encodeURIComponent(searchTerm)}`
@@ -101,11 +101,30 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchTerm]);
 
   useEffect(() => {
     fetchProfile();
-  }, [searchTerm]);
+  }, [searchTerm, fetchProfile]);
+
+  const animateOverallRating = useCallback((newRating: number) => {
+    const duration = 1000; // Duration of the animation in milliseconds
+    const start = overallRating;
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsedTime = currentTime - startTime;
+      const progress = Math.min(elapsedTime / duration, 1);
+      const interpolatedRating = start + (newRating - start) * progress;
+      setOverallRating(interpolatedRating);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [overallRating]);
 
   useEffect(() => {
     if (selectedCourse) {
@@ -136,7 +155,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
       setLineGraphData([]);
       setSelectedTerm(null);
     }
-  }, [selectedCourse, data]);
+  }, [selectedCourse, data, animateOverallRating]);
 
   useEffect(() => {
     if (selectedCourse && selectedTerm) {
@@ -155,26 +174,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
         setAvgResponse3(parseFloat(selectedData.AvgResponse3));
       }
     }
-  }, [selectedCourse, selectedTerm, data]);
-
-  const animateOverallRating = (newRating: number) => {
-    const duration = 1000; // Duration of the animation in milliseconds
-    const start = overallRating;
-    const startTime = performance.now();
-
-    const animate = (currentTime: number) => {
-      const elapsedTime = currentTime - startTime;
-      const progress = Math.min(elapsedTime / duration, 1);
-      const interpolatedRating = start + (newRating - start) * progress;
-      setOverallRating(interpolatedRating);
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
-    };
-
-    requestAnimationFrame(animate);
-  };
+  }, [selectedCourse, selectedTerm, data, animateOverallRating]);
 
   const handleCourseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCourse(e.target.value);
