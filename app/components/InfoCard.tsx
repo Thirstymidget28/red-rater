@@ -153,7 +153,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
       setLineGraphData([]);
       setSelectedTerm(null);
     }
-  }, [selectedCourse, data, animateOverallRating]);
+  }, [selectedCourse, data]);
 
   useEffect(() => {
     if (selectedCourse && selectedTerm) {
@@ -172,7 +172,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
         setAvgResponse3(parseFloat(selectedData.AvgResponse3));
       }
     }
-  }, [selectedCourse, selectedTerm, data, animateOverallRating]);
+  }, [selectedCourse, selectedTerm, data]);
 
   const handleCourseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCourse(e.target.value);
