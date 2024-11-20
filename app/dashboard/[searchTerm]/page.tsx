@@ -8,6 +8,18 @@ interface DashboardProps {
   searchParams: { baseURL: string };
 }
 
+interface ProfessorData {
+  Name: string;
+  SubjectName: string;
+  Term: string;
+  CourseNum: string;
+  Entries: string;
+  AvgResponse1: string;
+  AvgResponse2: string;
+  AvgResponse3: string;
+  OverallRating: string;
+}
+
 const Dashboard = async ({ params, searchParams }: DashboardProps) => {
   const { searchTerm } = await params;
   const { baseURL } = await searchParams;
@@ -21,7 +33,7 @@ const Dashboard = async ({ params, searchParams }: DashboardProps) => {
     // Confirm successful HTTP response
     notFound();
   }
-  const data = await response.json();
+  const data: ProfessorData[] = await response.json();
 
   if (!data || data.length === 0) {
     // Confirm data was retrieved from DB
@@ -32,12 +44,12 @@ const Dashboard = async ({ params, searchParams }: DashboardProps) => {
   const transformedProfile = {
     name: data[0].Name,
     subjectName: data[0].SubjectName,
-    terms: Array.from(new Set(data.map((item: any) => item.Term))),
+    terms: Array.from(new Set(data.map((item) => item.Term))),
     courses: Array.from(
-      new Set(data.map((item: any) => item.CourseNum))
+      new Set(data.map((item) => item.CourseNum))
     ) as string[],
     entries: data.reduce(
-      (acc: number, item: any) => acc + parseInt(item.Entries, 10),
+      (acc, item) => acc + parseInt(item.Entries, 10),
       0
     ),
     avgResponse1: parseFloat(data[0].AvgResponse1),
