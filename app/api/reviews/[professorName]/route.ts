@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getConnection } from './../../../lib/db_util';
 
 export async function GET(req: NextRequest, { params }: { params: { professorName: string } }) {
-  const { professorName } = await params;
+  const { professorName } = params;
 
   if (!professorName) {
     console.error('Professor name is required');
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { professorNam
       [professorName]
     );
     connection.release();
-    console.log('Reviews fetched successfully');
+    console.log('Reviews fetched successfully:', reviews);
     return NextResponse.json(reviews, { status: 200 });
   } catch (error) {
     console.error('Failed to fetch reviews:', error);
