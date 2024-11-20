@@ -4,8 +4,8 @@ import Image from "next/image";
 import ReviewSection from "./../../components/ReviewSection";
 
 interface DashboardProps {
-  params: { searchTerm: string };
-  searchParams: { baseURL: string };
+  params: Promise<{ searchTerm: string }>;
+  searchParams: Promise<{ baseURL: string }>;
 }
 
 interface ProfessorData {
