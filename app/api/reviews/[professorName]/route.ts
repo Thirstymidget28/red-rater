@@ -3,9 +3,9 @@ import { getConnection } from '../../../lib/db_util';
 
 export async function GET(
   request: Request,
-  { params }: { params: { professorName: string } }
+  context: { params: { professorName: string } }
 ) {
-  const { professorName } = params;
+  const { professorName } = context.params;
 
   if (!professorName) {
     console.error('Professor name is required');
