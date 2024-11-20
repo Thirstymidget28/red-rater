@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const connection = await getConnection();
     const [rows] = await connection.execute('SELECT DISTINCT Name FROM results');
-    console.log("Data retrieved from database:", rows);
+    console.log("Data retrieved from database");
     return NextResponse.json(rows);
   } catch (error) {
     console.error("Error in /api/professors:", error);

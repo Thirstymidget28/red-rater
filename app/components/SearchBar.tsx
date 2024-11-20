@@ -1,7 +1,8 @@
 "use client";
+
 import React from "react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 interface Professor {
@@ -9,7 +10,6 @@ interface Professor {
 }
 
 const SearchBar = () => {
-  const searchParams = useSearchParams();
   const [professors, setProfessors] = useState<Professor[]>([]);
   const [findName, setName] = useState<Professor[]>([]);
   const router = useRouter();
@@ -65,7 +65,7 @@ const SearchBar = () => {
               if (e.key === "Enter") handleSearch(profName); // Handle Enter key
             }}
           />
-          <img
+          <Image
             src="/MagnifyingGlass.svg"
             alt="Magnifying glass"
             className="h-1/2 opacity-70"
