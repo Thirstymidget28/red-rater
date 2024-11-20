@@ -4,7 +4,6 @@ import Image from "next/image";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent form submission
@@ -40,9 +39,8 @@ const Login = () => {
       }
       
       window.location.reload(); // Refresh the page
-    } catch (error) {
+    } finally {
       // Handle errors (display error message)
-      setError("Invalid email or password.");
     }
   };
 
@@ -82,7 +80,6 @@ const Login = () => {
                   required
                 />
               </label>
-              {error && <p className="text-red-600">{error}</p>}
               <button
                 type="submit"
                 className="btn bg-red-600 w-full hover:text-white hover:bg-black"
