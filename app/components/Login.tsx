@@ -92,7 +92,7 @@ const Login = () => {
             </div>
           </form>
           <p className="self-center">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <button
               className="text-red-600 underline"
               onClick={() => {

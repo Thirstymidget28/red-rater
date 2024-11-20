@@ -28,7 +28,7 @@ export default function Home() {
           <SearchBar />
         </div>
         <h2 className="font-helvetica text-xs font-bold text-center pb-5 sm:text-sm lg:text-md 2xl:text-lg px-10">
-          Can't find the right fit? Click on the chat bubble to try out Red
+          Can&apos;t find the right fit? Click on the chat bubble to try out Red
           Rater AI.
         </h2>
       </div>
