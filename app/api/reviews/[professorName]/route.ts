@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getConnection } from './../../../lib/db_util';
 
-export async function GET(req: NextRequest, { params }: { params: { professorName: string } }) {
-  const { professorName } = params;
+interface Context {
+  params: {
+    professorName: string;
+  };
+}
+
+export async function GET(req: NextRequest, context: Context) {
+  const { professorName } = context.params;
 
   if (!professorName) {
     console.error('Professor name is required');
