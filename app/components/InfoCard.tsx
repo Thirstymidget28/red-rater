@@ -202,8 +202,8 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
   }
 
   return (
-    <div className="flex w-full p-5 lg:p-10 2xl:px-32 overflow-hidden">
-      <div className="w-1/2">
+    <div className="flex flex-col lg:flex-row w-full p-5 lg:p-10 2xl:px-32 overflow-hidden">
+      <div className="w-full">
         <div className="flex flex-col">
           <div className="bg-white rounded-md shadow-md shadow-black text-center w-full md:w-1/2 lg:w-fit pt-4 pb-1 px-5 overflow-hidden">
             <h1 className="text-slate-900 text-3xl align-middle lg:text-5xl font-helvetica uppercase font-bolder max-w-5xl">
@@ -216,10 +216,10 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
             </h2>
           </div>
         </div>
-        <div className="flex flex-col overflow-hidden p-4">
+        <div className="flex flex-col w-full overflow-hidden p-4">
           <div className="flex flex-col w-full">
             <div className="bg-gray-800 h-fit w-fit rounded-md shadow-md shadow-black mt-2 p-3 2xl:p-5">
-              <h2 className="text-slate-50 text-2xl font-helvetica font-bold uppercase">
+              <h2 className="text-slate-50 text-2xl text-center font-helvetica font-bold uppercase">
                 Smart Eval Questions
               </h2>
             </div>
@@ -239,7 +239,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
               </p>
             </div>
             <div className="bg-gray-800 shadow-md shadow-black rounded-md h-fit w-fit my-5 p-3 2xl:p-5">
-              <h2 className="text-slate-50 text-2xl font-helvetica font-bold uppercase">
+              <h2 className="text-slate-50 text-2xl text-center font-helvetica font-bold uppercase">
                 Ratings over Semesters
               </h2>
             </div>
@@ -249,7 +249,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ searchTerm, profile }) => {
           </div>
         </div>
       </div>
-      <div className="w-1/2 h-full flex flex-col">
+      <div className="w-full h-full flex flex-col">
         <div className="w-full ml-auto flex justify-between items-center h-20">
           <select
             className="select bg-slate-50 select-bordered border-2 border-black focus:border-black focus:outline-none w-1/2 max-w-40 font-bold mr-1"
