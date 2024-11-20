@@ -1,12 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getConnection } from './../../../lib/db_util';
+import { NextResponse } from 'next/server';
+import { getConnection } from '../../../lib/db_util';
 
-export async function GET(req: NextRequest, { params }: { params: { professorName: string } }) {
-  const { professorName } = await params;
+export async function GET(
+  request: Request,
+  context: { params: Promise<{ professorName: string }> }
+) {
+  const { professorName } = await context.params;
 
   if (!professorName) {
     console.error('Professor name is required');
-    return NextResponse.json({ error: 'Professor name is required' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Professor name is required' },
+      { status: 400 }
+    );
   }
 
   try {
@@ -17,10 +23,13 @@ export async function GET(req: NextRequest, { params }: { params: { professorNam
       [professorName]
     );
     connection.release();
-    console.log('Reviews fetched successfully');
+    console.log('Reviews fetched successfully:', reviews);
     return NextResponse.json(reviews, { status: 200 });
   } catch (error) {
     console.error('Failed to fetch reviews:', error);
-    return NextResponse.json({ error: 'Failed to fetch reviews' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch reviews' },
+      { status: 500 }
+    );
   }
 }
