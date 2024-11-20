@@ -1,8 +1,17 @@
-// /app/api/auth/login/route.ts
 import { NextResponse } from 'next/server'; // Middleware api for managing HTTP responses.
 import { verify } from 'argon2'; // Password comparison function
 import { signJWT } from '../../../lib/jwt'; // Import the signJWT function
 import { getConnection } from '../../../lib/db_util'; // Database utility
+import { RowDataPacket, FieldPacket } from 'mysql2/promise'; // Import RowDataPacket and FieldPacket
+
+interface User extends RowDataPacket {
+  id: number;
+  name: string;
+  email: string;
+  password_hash: string;
+  fname: string;
+  lname: string;
+}
 
 export async function POST(request: Request) {
   const { email, password } = await request.json();
@@ -10,9 +19,12 @@ export async function POST(request: Request) {
   try {
     // Retrieve user from the database
     const connection = await getConnection();
-    const [rows]: any[] = await connection.execute('SELECT * FROM users WHERE email = ?', [email]);
+    const [rows, fields]: [User[], FieldPacket[]] = await connection.execute('SELECT * FROM users WHERE email = ?', [email]);
 
-    if (rows.length === 0) { // If the table is not empty
+    // Log the fields for debugging purposes
+    console.log(fields);
+
+    if (rows.length === 0) { // If the table is empty
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }
 
