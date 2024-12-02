@@ -19,15 +19,24 @@ async function fetchInitialUser(headers: Headers) {
   const protocol = headers.get("x-forwarded-proto") || "http";
   const baseUrl = `${protocol}://${host}`;
 
+  const cookie = headers.get("cookie") || "";
+
+  if (!cookie.includes("auth_token")) {
+    console.log("No auth token found in cookies");
+    return initialUser;
+  }
+
   try {
     const response = await fetch(`${baseUrl}/api/auth/user`, {
       credentials: "include",
       headers: {
-        cookie: headers.get("cookie") || "",
+        cookie,
       },
     });
     if (response.ok) {
       initialUser = await response.json();
+    } else {
+      console.log("Failed to fetch user: ", response.statusText);
     }
   } catch (error) {
     console.error("Failed to fetch user:", error);
