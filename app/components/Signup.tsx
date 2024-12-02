@@ -162,7 +162,7 @@ const Signup = () => {
                         </button>
                     </div>
                     <p className="self-center">
-                        Don&apos;t have an account?{" "}
+                        Already have an account?{" "}
                         <button
                             className="text-red-600 underline"
                             onClick={() => {
